@@ -30,10 +30,10 @@ export class DataService {
     }
   }
 
-// login
-  login(acno:any, pswd:any) {
+  // login
+  login(acno: any, pswd: any) {
 
-   
+
     let database = this.database
     if (acno in database) {
       if (pswd == database[acno]["password"]) {
@@ -43,33 +43,61 @@ export class DataService {
         alert("incorrect password")
         return false
       }
-  
+
     }
     else {
       alert("user doesnot exist")
       return false
     }
-  
+
   }
 
   // deposit
-  deposit(acno:any,pswd:any,amt:any){
+  deposit(acno: any, pswd: any, amt: any) {
     let database = this.database
 
-    var amount= parseInt(amt)
-    if(acno in database){
-      if(pswd == database[acno]["password"]){
-        database[acno]["balance"]+=amount
+    var amount = parseInt(amt)
+    if (acno in database) {
+      if (pswd == database[acno]["password"]) {
+        database[acno]["balance"] += amount
         return database[acno]["balance"]
 
       }
 
-    else{
-      alert("incorrect  password")
+      else {
+        alert("incorrect password")
+        return false
+      }
+    }
+    else {
+      alert(" user doesnot exist")
       return false
     }
+
+  }
+
+  // withdraw
+  withdraw(acno: any, pswd: any, amt: any) {
+    let database = this.database
+
+    var amount = parseInt(amt)
+    if (acno in database) {
+      if (pswd == database[acno]["password"]) {
+        if (database[acno]["balance"] > amount) {
+          database[acno]["balance"] -= amount
+          return database[acno]["balance"]
+        }
+        else {
+          alert("insufficient balance")
+        }
+      }
+
+      else {
+        alert("incorrect password")
+        return false
+      }
     }
-    else{
+    else {
       alert(" user doesnot exist")
       return false
     }
