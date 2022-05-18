@@ -4,13 +4,42 @@ import { Injectable } from '@angular/core';
   providedIn: 'root'
 })
 export class DataService {
+
+  currentUser:any
+  currentAcno:any
   database: any = {
-    1000: { acno: 1000, uname: "Arun", password: 1000, balance: 5000 },
-    1001: { acno: 1001, uname: "rino", password: 1001, balance: 7000 },
-    1002: { acno: 1002, uname: "vishnu", password: 1002, balance: 2000 }
+    1000: { acno: 1000, uname: "Arun", password: 1000, balance: 5000,transaction:[] },
+    1001: { acno: 1001, uname: "rino", password: 1001, balance: 7000,transaction:[]  },
+    1002: { acno: 1002, uname: "vishnu", password: 1002, balance: 2000,transaction:[]  }
   }
 
-  constructor() { }
+  constructor() {
+    this.getDetails()
+   }
+
+  saveDetails(){
+    localStorage.setItem("database", JSON.stringify(this.database))
+    if(this.currentAcno){
+      localStorage.setItem("currentAcno", JSON.stringify(this.currentAcno))
+    }
+    if(this.currentUser){
+      localStorage.setItem("currentUser", JSON.stringify(this.currentUser))
+    }
+
+  }
+
+  getDetails(){
+    if(localStorage.getItem("database")){
+      this.database = JSON.parse(localStorage.getItem("database")||'')
+    }
+    if(localStorage.getItem("currentAcno")){
+      this.currentAcno = JSON.parse(localStorage.getItem("currentAcno")||'')
+    }
+    if(localStorage.getItem("currentUser")){
+      this.currentUser = JSON.parse(localStorage.getItem("CurrentUser")||'')
+    }
+  }
+
   // register
   register(uname: any, acno: any, password: any) {
     let database = this.database
@@ -22,9 +51,11 @@ export class DataService {
         acno,
         uname,
         password,
-        balance: 0
+        balance: 0,
+        transaction:[]
       }
       console.log(database)
+      this.saveDetails()
       return true
 
     }
@@ -37,6 +68,9 @@ export class DataService {
     let database = this.database
     if (acno in database) {
       if (pswd == database[acno]["password"]) {
+        this.currentUser = database[acno]["uname"]
+        this.currentAcno = acno
+        this.saveDetails()
         return true
       }
       else {
@@ -60,6 +94,11 @@ export class DataService {
     if (acno in database) {
       if (pswd == database[acno]["password"]) {
         database[acno]["balance"] += amount
+        database[acno]["transaction"].push({
+          type:"CREDIT",
+          amount:amount
+        })
+        this.saveDetails()
         return database[acno]["balance"]
 
       }
@@ -85,6 +124,11 @@ export class DataService {
       if (pswd == database[acno]["password"]) {
         if (database[acno]["balance"] > amount) {
           database[acno]["balance"] -= amount
+          database[acno]["transaction"].push({
+            type:"DEBIT",
+            amount:amount
+          })
+          this.saveDetails()
           return database[acno]["balance"]
         }
         else {
@@ -102,5 +146,8 @@ export class DataService {
       return false
     }
 
+  }
+  transaction(acno:any){
+  return this.database[acno].transaction
   }
 }
