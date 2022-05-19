@@ -14,7 +14,7 @@ export class DataService {
   }
 
   constructor() {
-    this.getDetails()
+    // this.getDetails()
    }
 
   saveDetails(){
@@ -36,12 +36,13 @@ export class DataService {
       this.currentAcno = JSON.parse(localStorage.getItem("currentAcno")||'')
     }
     if(localStorage.getItem("currentUser")){
-      this.currentUser = JSON.parse(localStorage.getItem("CurrentUser")||'')
+      this.currentUser = JSON.parse(localStorage.getItem("currentUser")||'')
     }
   }
 
   // register
   register(uname: any, acno: any, password: any) {
+    this.getDetails()
     let database = this.database
     if (acno in database) {
       return false
@@ -63,7 +64,7 @@ export class DataService {
 
   // login
   login(acno: any, pswd: any) {
-
+    this.getDetails()
 
     let database = this.database
     if (acno in database) {
@@ -88,6 +89,7 @@ export class DataService {
 
   // deposit
   deposit(acno: any, pswd: any, amt: any) {
+    this.getDetails()
     let database = this.database
 
     var amount = parseInt(amt)
@@ -117,6 +119,7 @@ export class DataService {
 
   // withdraw
   withdraw(acno: any, pswd: any, amt: any) {
+    this.getDetails()
     let database = this.database
 
     var amount = parseInt(amt)
